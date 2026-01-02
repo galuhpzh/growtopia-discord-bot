@@ -1,13 +1,20 @@
-import { SlashCommandBuilder, CommandInteraction, Collection, PermissionResolvable } from "discord.js";
+import {
+  SlashCommandBuilder,
+  CommandInteraction,
+  Collection,
+  PermissionResolvable,
+} from "discord.js";
 
 export interface SlashCommand {
-    command: SlashCommandBuilder | any;
-    execute: (interaction: CommandInteraction) => Promise<void>;
-    cooldown?: number; 
-    permissions?: PermissionResolvable[];
+  command: SlashCommandBuilder | any;
+  execute: (interaction: CommandInteraction) => Promise<void>;
+  cooldown?: number;
+  permissions?: PermissionResolvable[];
 }
 
 export interface BotConfig {
-    token: string;
-    clientId: string;
+  token: string;
+  clientId: string;
 }
+
+export { SlashCommandBuilder };
