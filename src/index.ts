@@ -11,13 +11,13 @@ const client = new ExtendedClient();
 const foldersPath = path.join(__dirname, "commands");
 const commandFolders = fs.readdirSync(foldersPath);
 
-console.log("Loading commands...");
+console.log("🔄 Loading commands...");
 
 for (const folder of commandFolders) {
   const commandsPath = path.join(foldersPath, folder);
   const commandFiles = fs
     .readdirSync(commandsPath)
-    .filter((file) => file.endsWith(".ts") || file.endsWith(".js"));
+    .filter((file) => file.endsWith(".ts"));
 
   for (const file of commandFiles) {
     const filePath = path.join(commandsPath, file);
@@ -40,23 +40,31 @@ const eventsPath = path.join(__dirname, "events");
 if (fs.existsSync(eventsPath)) {
   const eventFiles = fs
     .readdirSync(eventsPath)
-    .filter((file) => file.endsWith(".ts") || file.endsWith(".js"));
+    .filter((file) => file.endsWith(".ts"));
 
   console.log("Loading events...");
 
   for (const file of eventFiles) {
     const filePath = path.join(eventsPath, file);
-    const event = require(filePath);
+    const eventModule = require(filePath);
 
-    if (event.once) {
-      client.once(event.name, (...args) => event.execute(...args));
+    const event = eventModule.default || eventModule;
+
+    if (event.name) {
+      if (event.once) {
+        client.once(event.name, (...args) => event.execute(...args));
+      } else {
+        client.on(event.name, (...args) => event.execute(...args));
+      }
+      console.log(`Loaded event: ${event.name}`);
     } else {
-      client.on(event.name, (...args) => event.execute(...args));
+      console.log(
+        `Gagal load event: ${file} (Export default tidak ditemukan/salah struktur)`
+      );
     }
-    console.log(`Loaded event: ${event.name}`);
   }
 } else {
-  console.log("No events directory found, skipping event loading.");
+  console.log("ℹNo events directory found, skipping event loading.");
 }
 
 client.start();
