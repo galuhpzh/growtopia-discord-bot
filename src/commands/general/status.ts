@@ -61,6 +61,10 @@ const command: SlashCommand = {
         )
         .setImage(finalImageUrl)
         .setColor(safeOnline === 0 ? 0xff0000 : 0x00ff00)
+        .setFooter({
+          iconURL: interaction.user.displayAvatarURL({ extension: "png" }),
+          text: ` ${interaction.user.username}`,
+        })
         .setTimestamp();
 
       await interaction.editReply({ embeds: [embed] });
